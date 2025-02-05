@@ -2,6 +2,7 @@
 import Form from "@/components/Form";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const UpdateNote = () => {
   const router = useRouter();
@@ -9,25 +10,18 @@ const UpdateNote = () => {
   const noteId = searchParams.get("id");
 
   const [submitting, setIsSubmitting] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [post, setPost] = useState({ note: "", tag: "" });
 
   useEffect(() => {
     if (!noteId) return;
 
     const getNoteDetails = async () => {
-      try {
-        const response = await fetch(`/api/note/${noteId}`);
-        const data = await response.json();
-        setPost({
-          note: data.note,
-          tag: data.tag,
-        });
-      } catch (error) {
-        console.error("Failed to fetch note details", error);
-      } finally {
-        setLoading(false);
-      }
+      const response = await fetch(`/api/note/${noteId}`);
+      const data = await response.json();
+      setPost({
+        note: data.note,
+        tag: data.tag,
+      });
     };
 
     getNoteDetails();
@@ -54,18 +48,20 @@ const UpdateNote = () => {
     }
   };
 
-  if (loading) {
+  if (!noteId || !post.note) {
     return <div>Loading...</div>;
   }
 
   return (
-    <Form
-      type="Edit"
-      post={post}
-      setPost={setPost}
-      submitting={submitting}
-      handleSubmit={updateNote}
-    />
+    <Suspense fallback={<div>Loading...</div>}>
+      <Form
+        type="Edit"
+        post={post}
+        setPost={setPost}
+        submitting={submitting}
+        handleSubmit={updateNote}
+      />
+    </Suspense>
   );
 };
 export default UpdateNote;
