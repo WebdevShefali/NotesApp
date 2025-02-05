@@ -47,15 +47,17 @@ const UpdateNote = () => {
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Form
-        type="Edit"
-        post={post}
-        setPost={setPost}
-        submitting={submitting}
-        handleSubmit={updateNote}
-      />
-    </Suspense>
+    <div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Form
+          type="Edit"
+          post={post}
+          setPost={setPost}
+          submitting={submitting}
+          handleSubmit={updateNote}
+        />
+      </Suspense>
+    </div>
   );
 };
 export default UpdateNote;
