@@ -13,6 +13,8 @@ const UpdateNote = () => {
   const [post, setPost] = useState({ note: "", tag: "" });
 
   useEffect(() => {
+    if (!noteId) return;
+
     const getNoteDetails = async () => {
       const response = await fetch(`/api/note/${noteId}`);
       const data = await response.json();
@@ -22,7 +24,7 @@ const UpdateNote = () => {
       });
     };
 
-    if (noteId) getNoteDetails();
+    getNoteDetails();
   }, [noteId]);
 
   const updateNote = async (e) => {
@@ -45,6 +47,10 @@ const UpdateNote = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (!noteId || !post.note) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
